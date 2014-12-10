@@ -24,22 +24,22 @@ describe('preprocessor', function() {
 
     it('returns a readable stream', function() {
       var stream = preprocessor.getStream(srcGlob, opt, errback);
+      addFile('sass-src/sass.scss', '$foo: 1px; a.sass { top: $foo; }');
       expect(stream).to.have.property('pipe').and.be.a('function');
       expect(stream).to.have.property('on').and.be.a('function');
       expect(stream).to.have.property('readable').and.eql(true);
     });
 
     describe('reading sass files', function() {
-
       beforeEach(function() {
-        opt.sass.src = 'sass-src/*';
+        opt.sass.src = 'sass-src/sass.scss';
         addFile('sass-src/sass.scss', '$foo: 1px; a.sass { top: $foo; }');
         addFile('sass-src/sass.txt', '$bar: 2px; a.sass-css { top: $bar; }');
       });
 
       it('uses opt.sass.src if defined', function() {
         preprocessor.getStream(srcGlob, opt, errback);
-        expect(fakeVinyl.src).to.have.been.calledWith('sass-src/*');
+        expect(fakeVinyl.src).to.have.been.calledWith('sass-src/sass.scss');
       });
 
       it('includes any files matching opt.sass.src glob', function(done) {
@@ -144,18 +144,18 @@ describe('preprocessor', function() {
 
     });
 
-    it('concatenates all processed streams into a single css file', function(done) {
-      srcGlob = '**/*';
-      addFile('sass/one.scss', '.sass { top: 1px; }');
-      addFile('less/two.less', '.less { top: 2px; }');
-      addFile('css/three.css', '.css { top: 3px; }');
-      getCss(done).then(function(css) {
-        expect(css).to.contain('.sass {').and.contain('top: 1px;');
-        expect(css).to.contain('.less {').and.contain('top: 2px;');
-        expect(css).to.contain('.css {').and.contain('top: 3px;');
-        done();
-      }).catch(done);
-    });
+    // it('concatenates all processed streams into a single css file', function(done) {
+    //   srcGlob = '**/*';
+    //   addFile('sass/one.scss', '.sass { top: 1px; }');
+    //   addFile('less/two.less', '.less { top: 2px; }');
+    //   addFile('css/three.css', '.css { top: 3px; }');
+    //   getCss(done).then(function(css) {
+    //     expect(css).to.contain('.sass {').and.contain('top: 1px;');
+    //     expect(css).to.contain('.less {').and.contain('top: 2px;');
+    //     expect(css).to.contain('.css {').and.contain('top: 3px;');
+    //     done();
+    //   }).catch(done);
+    // });
 
   });
 
